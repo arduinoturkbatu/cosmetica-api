@@ -14,6 +14,7 @@ app.get('/price', async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: 'new',
+      executablePath: '/opt/render/.cache/puppeteer/chrome/linux-121.0.6167.85/chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
