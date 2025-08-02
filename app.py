@@ -1,50 +1,42 @@
-import os
+import requests
+from bs4 import BeautifulSoup
 from flask import Flask, request, jsonify
-from playwright.sync_api import sync_playwright
 
 app = Flask(__name__)
 
 def get_price_from_cosmetica(barcode):
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
+    url = f"https://www.cosmetica.com.tr/search?s={barcode}"
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
 
-        # Cosmetica'da arama yap
-        search_url = f"https://www.cosmetica.com.tr/search?s={barcode}"
-        page.goto(search_url)
-        page.wait_for_timeout(3000)  # Sayfa yüklenmesi için kısa bekleme
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return {"error": "Siteye erişilemedi."}
 
-        try:
-            # Ürün bilgilerini çek
-            title = page.locator("h2.card-title").first.inner_text()
-            price = page.locator(".currentPrice").first.inner_text()
+    soup = BeautifulSoup(response.text, "html.parser")
 
-            return {
-                "barcode": barcode,
-                "title": title,
-                "price": price
-            }
+    product = soup.select_one("div.product-item")
+    if not product:
+        return {"error": "Ürün bulunamadı."}
 
-        except Exception as e:
-            return {
-                "barcode": barcode,
-                "error": "Ürün bulunamadı veya sayfa yapısı değişmiş olabilir.",
-                "details": str(e)
-            }
+    name = product.select_one("h3.product-name").get_text(strip=True)
+    price = product.select_one(".product-price").get_text(strip=True)
 
-        finally:
-            browser.close()
+    return {
+        "barcode": barcode,
+        "name": name,
+        "price": price
+    }
 
-@app.route("/price", methods=["GET"])
+@app.route("/price")
 def price():
     barcode = request.args.get("barcode")
     if not barcode:
-        return jsonify({"error": "Lütfen ?barcode= parametresi giriniz"}), 400
-    
+        return jsonify({"error": "barcode parametresi eksik"}), 400
+
     result = get_price_from_cosmetica(barcode)
     return jsonify(result)
 
-# Render 10000 portunu kullanır
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Render'ın verdiği portu oku, yoksa 10000'e düş
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=10000)
