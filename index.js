@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const puppeteer = require("puppeteer");
 
-console.log("👉 Puppeteer default executablePath:", puppeteer.executablePath());
+//console.log("👉 Puppeteer default executablePath:", puppeteer.executablePath());
 console.log("👉 PUPPETEER_CACHE_DIR:", process.env.PUPPETEER_CACHE_DIR);
 
 const app = express();
