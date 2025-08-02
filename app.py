@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from playwright.sync_api import sync_playwright
 
@@ -45,4 +46,5 @@ def price():
 
 # Render 10000 portunu kullanır
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 10000))  # Render'ın verdiği portu oku, yoksa 10000'e düş
+    app.run(host="0.0.0.0", port=port)
