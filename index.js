@@ -1,3 +1,6 @@
+require("dotenv").config();
+
+
 const express = require("express");
 const puppeteer = require("puppeteer");
 
@@ -5,6 +8,7 @@ const app = express();
 
 async function getPriceFromCosmetica(barcode) {
   const browser = await puppeteer.launch({
+    executablePath: '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/chrome',
     args: ["--no-sandbox", "--disable-setuid-sandbox"]
   });
   const page = await browser.newPage();
@@ -19,16 +23,13 @@ async function getPriceFromCosmetica(barcode) {
     const price = product.querySelector(".pb-1")?.innerText;
     const discount = product.querySelector(".text-base")?.innerText;
 
-    return {
-      name,
-      price,
-      discount
-    };
+    return { name, price, discount };
   });
 
   await browser.close();
   return result;
 }
+
 
 app.get("/price", async (req, res) => {
   const barcode = req.query.barcode;
