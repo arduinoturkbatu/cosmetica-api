@@ -36,3 +36,6 @@ npm install
 
 # Puppeteer Chrome'u indir
 npx puppeteer browsers install chrome
+
+# testing
+npm ls puppeteer-core
