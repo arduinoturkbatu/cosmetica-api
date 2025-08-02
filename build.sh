@@ -27,8 +27,8 @@ apt-get update && apt-get install -y \
 # Chromium indir ve aç
 mkdir -p /opt/chromium
 cd /opt/chromium
-wget https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1249841%2Fchrome-linux.zip
-unzip chrome-linux.zip
+wget https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1249841%2Fchrome-linux.zip?generation=1705774815490272&alt=media
+unzip Linux_x64_1249841_chrome-linux.zip
 
 
 # Paketleri yükle
