@@ -10,8 +10,10 @@ const app = express();
 
 async function getPriceFromCosmetica(barcode) {
   const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: puppeteer.executablePath(),
   });
+  console.log("👉 Puppeteer launched with executablePath:", puppeteer.executablePath());
 
   const page = await browser.newPage();
   const url = `https://www.cosmetica.com.tr/search?s=${barcode}`;
