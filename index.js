@@ -21,15 +21,17 @@ app.get('/price', async (req, res) => {
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
     const result = await page.evaluate(() => {
-      const product = document.querySelector('.product-item');
+      const product = document.querySelector('div.h-full');
       if (!product) return null;
 
       const discounted = product.querySelector('.price .price-new')?.innerText?.trim();
-      const original = product.querySelector('.price .price-old')?.innerText?.trim();
+      const original = product.querySelector('.text-base')?.innerText?.trim();
+      const name = product.querySelector('.mb-1')?.innerText?.trim();
 
       return {
         discountedPrice: discounted || null,
         originalPrice: original || null,
+        name: name || null,
       };
     });
 
