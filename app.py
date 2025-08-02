@@ -9,7 +9,7 @@ def get_price_from_cosmetica(barcode):
         page = browser.new_page()
 
         # Cosmetica'da arama yap
-        search_url = f"https://www.cosmetica.com.tr/search?q={barcode}"
+        search_url = f"https://www.cosmetica.com.tr/search?s={barcode}"
         page.goto(search_url)
         page.wait_for_timeout(3000)  # Sayfa yüklenmesi için kısa bekleme
 
