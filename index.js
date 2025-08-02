@@ -1,57 +1,48 @@
-require("dotenv").config();
-
-const express = require("express");
-const puppeteer = require("puppeteer");
-
-console.log("👉 Puppeteer default executablePath:", puppeteer.executablePath());
-console.log("👉 PUPPETEER_CACHE_DIR:", process.env.PUPPETEER_CACHE_DIR);
+import express from 'express';
+import puppeteer from 'puppeteer';
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-async function getPriceFromCosmetica(barcode) {
-  const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  });
-
-  console.log("👉 Puppeteer launched with executablePath:", puppeteer.executablePath());
-
-  const page = await browser.newPage();
-  const url = `https://www.cosmetica.com.tr/search?s=${barcode}`;
-  await page.goto(url, { waitUntil: "networkidle2" });
-
-  const result = await page.evaluate(() => {
-    const product = document.querySelector(".h-full");
-    if (!product) return { error: "Ürün bulunamadı." };
-
-    const name = product.querySelector(".mb-1")?.innerText;
-    const price = product.querySelector(".pb-1")?.innerText;
-    const discount = product.querySelector(".text-base")?.innerText;
-
-    return {
-      name,
-      price,
-      discount
-    };
-  });
-
-  await browser.close();
-  return result;
-}
-
-app.get("/price", async (req, res) => {
+app.get('/price', async (req, res) => {
   const barcode = req.query.barcode;
-  if (!barcode) return res.status(400).json({ error: "barcode parametresi eksik" });
+  if (!barcode) return res.status(400).json({ error: 'Barcode is required.' });
+
+  const url = `https://cosmetica.com.tr/search?s=${barcode}`;
+  let browser;
 
   try {
-    const result = await getPriceFromCosmetica(barcode);
-    res.json({ barcode, ...result });
-  } catch (error) {
-    console.error("❌ Sunucu hatası:", error);
-    res.status(500).json({ error: "Sunucu hatası", details: error.message });
+    browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+
+    const result = await page.evaluate(() => {
+      const product = document.querySelector('.product-item');
+      if (!product) return null;
+
+      const discounted = product.querySelector('.price .price-new')?.innerText?.trim();
+      const original = product.querySelector('.price .price-old')?.innerText?.trim();
+
+      return {
+        discountedPrice: discounted || null,
+        originalPrice: original || null,
+      };
+    });
+
+    if (!result) return res.status(404).json({ error: 'Product not found' });
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  } finally {
+    if (browser) await browser.close();
   }
 });
 
-const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`API ready at http://localhost:${PORT}`);
 });
