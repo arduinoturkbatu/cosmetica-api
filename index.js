@@ -11,7 +11,7 @@ const app = express();
 async function getPriceFromCosmetica(barcode) {
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    executablePath: "/opt/chromium/chrome-linux/chrome"
+    executablePath: "/opt/chromium/Linux_x64_1249841_chrome-linux/chrome"
   });
 
   console.log("👉 Puppeteer launched with executablePath:", puppeteer.executablePath());
