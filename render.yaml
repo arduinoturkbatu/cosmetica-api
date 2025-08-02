@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: cosmetica-api
+    env: python
+    buildCommand: bash build.sh
+    startCommand: python app.py
+    plan: free
