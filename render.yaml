@@ -1,7 +1,10 @@
 services:
   - type: web
     name: cosmetica-api
-    env: python
-    buildCommand: bash build.sh
-    startCommand: python app.py
+    env: node
     plan: free
+    buildCommand: bash build.sh
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20

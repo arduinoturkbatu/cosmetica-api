@@ -1,20 +1,4 @@
 #!/usr/bin/env bash
+apt-get update && apt-get install -y wget ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 libdbus-1-3 libgdk-pixbuf2.0-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 xdg-utils
 
-# Ortamı güncelle
-apt-get update
-
-# Gerekirse curl, wget gibi araçları yükle (genelde hazır olur)
-apt-get install -y curl
-
-# Sanal ortam oluştur ve aktif et (opsiyonel ama önerilir)
-python3 -m venv .venv
-source .venv/bin/activate
-
-# pip'i güncelle
-pip install --upgrade pip
-
-# Gerekli paketleri yükle
-pip install -r requirements.txt
-
-# (Opsiyonel) cache temizle
-pip cache purge
+npm install
