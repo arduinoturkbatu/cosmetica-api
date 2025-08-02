@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-# Gerekli paketleri kur
+# Cache temizle
+rm -rf node_modules package-lock.json
+npm cache clean --force
+
+# Sistem paketleri
 apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -20,8 +24,8 @@ apt-get update && apt-get install -y \
     libxrandr2 \
     xdg-utils
 
-# Node modüllerini kur
+# Paketleri yükle
 npm install
 
-# Puppeteer için tarayıcıyı indir
+# Puppeteer Chrome'u indir
 npx puppeteer browsers install chrome
