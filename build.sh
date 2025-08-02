@@ -24,6 +24,13 @@ apt-get update && apt-get install -y \
     libxrandr2 \
     xdg-utils
 
+# Chromium indir ve aç
+mkdir -p /opt/chromium
+cd /opt/chromium
+wget https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/1276533/chrome-linux.zip
+unzip chrome-linux.zip
+
+
 # Paketleri yükle
 npm install
 
