@@ -16,17 +16,19 @@ def get_price_from_cosmetica(barcode):
 
     soup = BeautifulSoup(response.text, "html.parser")
 
-    product = soup.select_one("div.product-item")
+    product = soup.select_one("div.h-full:first-child")
     if not product:
         return {"error": "Ürün bulunamadı."}
 
-    name = product.select_one("h3.product-name").get_text(strip=True)
-    price = product.select_one(".product-price").get_text(strip=True)
+    name = product.select_one(".mb-1").get_text(strip=True)
+    price = product.select_one(".pb-1").get_text(strip=True)
+    discount = product.select_one(".text-base").get_text(strip=True)
 
     return {
         "barcode": barcode,
         "name": name,
-        "price": price
+        "price": price,
+        "discount": discount
     }
 
 @app.route("/price")
